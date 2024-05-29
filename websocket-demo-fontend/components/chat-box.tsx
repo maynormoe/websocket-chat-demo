@@ -1,6 +1,7 @@
-import React, { memo } from "react";
 import type { FC, ReactNode } from "react";
-import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/avatar";
+
+import React, { memo } from "react";
+import { Avatar } from "@nextui-org/avatar";
 import { Card, CardBody } from "@nextui-org/card";
 
 type ChatBoxProps = {
@@ -12,6 +13,7 @@ type ChatBoxProps = {
 
 const ChatBox: FC<ChatBoxProps> = (props) => {
   const { children, username = "", content = "", isReversed = false } = props;
+
   return (
     <div
       className={`flex flex-col ${
@@ -21,13 +23,13 @@ const ChatBox: FC<ChatBoxProps> = (props) => {
       <div
         className={`flex items-center space-x-4 ${
           isReversed ? "flex-row-reverse space-x-reverse" : ""
-        }`}
+        } px-3`}
       >
         <Avatar
           isBordered
+          color="secondary"
           radius="full"
           src="https://i.pravatar.cc/150?u=a04258114e29026708c"
-          color="secondary"
         />
         <span>{username}</span>
       </div>
