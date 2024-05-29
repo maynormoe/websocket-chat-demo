@@ -1,5 +1,18 @@
 spring:
   application:
     name: websocket-demo
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: 123456
+      database: 0
+      lettuce:
+        pool:
+          max-idle: 16
+          max-active: 32
+          min-idle: 8
 server:
   port: 8082
+
+

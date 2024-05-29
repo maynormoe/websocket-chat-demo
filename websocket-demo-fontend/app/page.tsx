@@ -6,12 +6,12 @@ import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
 import { useEffect, useRef, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { motion } from "framer-motion";
 
-import { getCookie } from "@/utils/auth";
+import { deleteCookie, getCookie } from "@/utils/auth";
 import SystemTip from "@/components/system-tip";
 import ChatBox from "@/components/chat-box";
-import { ScrollShadow } from "@nextui-org/scroll-shadow";
-import { motion, useAnimate, useAnimation, useScroll } from "framer-motion";
 
 type Message = {
   system: boolean;
@@ -62,7 +62,7 @@ export default function Home() {
       // filter: (message) => {},
     }
   );
-  const [messageHistory, setMessageHistory] = useState<MessageEvent<any>[]>([]);
+  const [messageHistory, setMessageHistory] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const connectionStatus = {
@@ -86,8 +86,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    console.log(lastMessage);
     if (lastMessage !== null) {
-      setMessageHistory((prev) => prev.concat(lastMessage));
+      const chatRecords = JSON.parse(lastMessage.data);
+
+      setMessageHistory((prev) => prev.concat(chatRecords));
 
       // 截取在线人数
       const data = lastJsonMessage as Message;
@@ -107,6 +110,19 @@ export default function Home() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messageHistory]);
+
+  useEffect(() => {
+    // console.log(lastJsonMessage);
+    if (lastJsonMessage !== null) {
+      const data = lastJsonMessage as Message;
+
+      if (data.system && data.content.includes("用户已在线")) {
+        setUsername(undefined);
+        deleteCookie("username");
+        window.location.reload();
+      }
+    }
+  }, [lastJsonMessage]);
 
   return (
     <Card className=" w-full h-full mb-8 px-4" shadow="sm">
@@ -136,23 +152,19 @@ export default function Home() {
             }}
           >
             {messageHistory.map((item, index) => {
-              const { timeStamp, data } = item;
-              const { system, from, time, content } = JSON.parse(
-                data
-              ) as Message;
-
+              const { system, time, content, from } = item as Message;
               return system ? (
-                <SystemTip key={timeStamp} message={content} />
+                <SystemTip key={time} message={content} />
               ) : (
                 <ChatBox
-                  key={timeStamp}
+                  key={time}
                   content={content}
                   isReversed={from !== username}
                   username={from}
                 />
               );
             })}
-            <div ref={messagesEndRef}></div>
+            <div ref={messagesEndRef} />
           </motion.div>
         </ScrollShadow>
       </CardBody>
