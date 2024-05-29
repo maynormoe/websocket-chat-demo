@@ -25,12 +25,7 @@ const ChatBox: FC<ChatBoxProps> = (props) => {
           isReversed ? "flex-row-reverse space-x-reverse" : ""
         } px-3`}
       >
-        <Avatar
-          isBordered
-          color="secondary"
-          radius="full"
-          src="https://i.pravatar.cc/150?u=a04258114e29026708c"
-        />
+        <Avatar isBordered color="secondary" radius="full" src="/avatar.png" />
         <span>{username}</span>
       </div>
 
