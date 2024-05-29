@@ -4,8 +4,8 @@ spring:
   data:
     redis:
       host: 127.0.0.1
-      port: 6379
-      password: 123456
+      port: 6388
+      password: 12435454
       database: 0
       lettuce:
         pool:
@@ -14,5 +14,10 @@ spring:
           min-idle: 8
 server:
   port: 8082
+  http-port: 8081
+  ssl:
+    key-store: classpath:static/server.pkcs12 #对应刚才文件放置的路径
+    key-store-password: 233666
+    key-store-type: pkcs12
 
 
