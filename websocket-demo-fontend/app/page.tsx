@@ -33,7 +33,9 @@ export default function Home() {
     readyState,
     getWebSocket,
   } = useWebSocket(
-    username ? `ws://${window.location.hostname}:8082/chat/${username}` : null,
+    username
+      ? `ws://${process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL}/chat/${username}`
+      : null,
     {
       // retryOnError: true,
       heartbeat: {
