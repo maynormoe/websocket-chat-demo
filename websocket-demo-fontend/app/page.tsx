@@ -34,7 +34,7 @@ export default function Home() {
     getWebSocket,
   } = useWebSocket(
     username
-      ? `ws://${process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL}/chat/${username}`
+      ? `${process.env.WS_TYPE}://${process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL}/chat/${username}`
       : null,
     {
       // retryOnError: true,
