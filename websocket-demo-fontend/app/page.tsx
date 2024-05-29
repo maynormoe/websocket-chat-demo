@@ -1,15 +1,17 @@
 "use client";
 
-import ChatBox from "@/components/chat-box";
 import { Badge } from "@nextui-org/badge";
-import SystemTip from "@/components/system-tip";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
-import { useEffect, useState } from "react";
-import { getCookie } from "@/utils/auth";
+import { useEffect, useRef, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { data } from "autoprefixer";
+
+import { getCookie } from "@/utils/auth";
+import SystemTip from "@/components/system-tip";
+import ChatBox from "@/components/chat-box";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { motion, useAnimate, useAnimation, useScroll } from "framer-motion";
 
 type Message = {
   system: boolean;
@@ -61,6 +63,7 @@ export default function Home() {
     }
   );
   const [messageHistory, setMessageHistory] = useState<MessageEvent<any>[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
@@ -88,49 +91,70 @@ export default function Home() {
 
       // 截取在线人数
       const data = lastJsonMessage as Message;
-      console.log(data);
+
       if (data.system && data.content.includes("在线人数")) {
         const match = data.content.match(/当前在线人数：(\d+)/);
+
         if (match) {
           setOnlineCount(Number(match[1]));
         }
       }
-      console.log(messageHistory);
     }
   }, [lastMessage]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messageHistory]);
+
   return (
-    <Card shadow="sm" className=" w-full h-full mb-8 px-4">
+    <Card className=" w-full h-full mb-8 px-4" shadow="sm">
       <CardHeader className="w-full h-12 flex justify-between items-center">
         <span className=" font-medium antialiased text-lg ">聊 天 室</span>
         <div>
           <div>
             <Badge
-              content=""
-              color="success"
-              shape="circle"
               className="mt-5 mr-3"
+              color="success"
+              content=""
+              shape="circle"
             >
-              <span></span>
+              <span />
             </Badge>
           </div>
           <span>在线人数：{onlineCount}</span>
         </div>
       </CardHeader>
-      <CardBody className=" w-full h-96 overflow-auto no-scrollbar">
-        {messageHistory.map((item, index) => {
-          const { timeStamp, data } = item;
-          const { system, from, time, content } = JSON.parse(data) as Message;
-          return system ? (
-            <SystemTip key={timeStamp} message={content} />
-          ) : (
-            <ChatBox
-              key={timeStamp}
-              username={from}
-              content={content}
-              isReversed={from === username}
-            />
-          );
-        })}
+      <CardBody className=" w-full h-96 overflow-auto">
+        <ScrollShadow hideScrollBar>
+          <motion.div
+            layout
+            transition={{
+              duration: 0.2,
+              opacity: { ease: "linear" },
+            }}
+          >
+            {messageHistory.map((item, index) => {
+              const { timeStamp, data } = item;
+              const { system, from, time, content } = JSON.parse(
+                data
+              ) as Message;
+
+              return system ? (
+                <SystemTip key={timeStamp} message={content} />
+              ) : (
+                <ChatBox
+                  key={timeStamp}
+                  content={content}
+                  isReversed={from !== username}
+                  username={from}
+                />
+              );
+            })}
+            <div ref={messagesEndRef}></div>
+          </motion.div>
+        </ScrollShadow>
       </CardBody>
       <CardFooter>
         <div className=" w-full flex space-x-2">

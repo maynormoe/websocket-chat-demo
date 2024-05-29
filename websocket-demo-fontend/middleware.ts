@@ -12,6 +12,7 @@ export function middleware(request: NextRequest) {
   } else if (pathname === "/login" && user) {
     return NextResponse.redirect(new URL("/", request.url));
   }
+
   return NextResponse.next();
 }
 

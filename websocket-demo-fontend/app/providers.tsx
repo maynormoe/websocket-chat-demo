@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import { Link } from "@nextui-org/link";
+
 import { Navbar } from "@/components/navbar";
 
 export interface ProvidersProps {

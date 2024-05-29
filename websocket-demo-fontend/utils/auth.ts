@@ -8,7 +8,7 @@ export async function createCookie({
 }) {
   Cookies.set(
     name,
-    value
+    value,
     // path: "/",
   );
 }
