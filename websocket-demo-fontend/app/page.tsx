@@ -156,10 +156,10 @@ export default function Home() {
             {messageHistory.map((item, index) => {
               const { system, time, content, from } = item as Message;
               return system ? (
-                <SystemTip key={time} message={content} />
+                <SystemTip key={index} message={content} />
               ) : (
                 <ChatBox
-                  key={time}
+                  key={index}
                   content={content}
                   isReversed={from !== username}
                   username={from}
