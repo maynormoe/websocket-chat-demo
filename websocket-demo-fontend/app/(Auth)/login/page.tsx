@@ -10,12 +10,7 @@ import { useRouter } from "next/navigation";
 
 import { createCookie, getCookie } from "@/utils/auth";
 
-type LoginProps = {
-  children?: ReactNode;
-};
-
-const Login: FC<LoginProps> = (props) => {
-  const { children } = props;
+const Login: FC = () => {
   const [username, setUsername] = useState("");
   const [userNameError, setUsernameError] = useState(0);
   const router = useRouter();
